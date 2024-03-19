@@ -11,32 +11,33 @@ const Gameboard = (function () {
             board[i].push('cell');
         }
     }
-
-    board[1][1] = 0;
+    board[1][1] = board[0][0] = '';
 
     //method to get board for UI
     const getBoard = () => board;
 
-    const placeLetter = (row, col, letter) => {
+    const placeLetter = (x, y, letter) => {
 
-        //create new array containing only the rows that are equal to 0. Add to new array if it is, else filter out
-        //need to make getValue method for Cell object
-        const availableCells = board.filter((row) => row[col] === 0);
-        console.log(availableCells);
-
-        //transform each remaining row. Extract and includes only the element at specified col from each row, making a new array of these values
-        const availableCellsMap = availableCells.map(row => row[col]);
-        console.log(availableCellsMap);
-
-        return {
-            availableCells,
-            availableCellsMap
-        }
+        board.forEach((row, rowIndex) => {
+            row.forEach((col, colIndex) => {
+                if(col === '') {
+                    if(rowIndex === x && colIndex === y) {
+                        board[x][y] = letter;
+                    }
+                }
+            });
+        });
     };
+
+    //method to print board
+    const printBoard = () => {
+        console.log(board);
+    }
 
     return {
         board,
         getBoard,
-        placeLetter
+        placeLetter,
+        printBoard
     }
 })();
