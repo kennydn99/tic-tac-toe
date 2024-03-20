@@ -8,30 +8,25 @@ const Gameboard = (function () {
         board[i] = [];
         for (let j = 0; j < cols; j++) {
             //Cell object
-            board[i].push('cell');
+            board[i].push(Cell());
         }
     }
-    board[1][1] = board[0][0] = '';
 
     //method to get board for UI
     const getBoard = () => board;
 
-    const placeLetter = (x, y, letter) => {
+    const placeLetter = (x, y, player) => {
 
-        board.forEach((row, rowIndex) => {
-            row.forEach((col, colIndex) => {
-                if(col === '') {
-                    if(rowIndex === x && colIndex === y) {
-                        board[x][y] = letter;
-                    }
-                }
-            });
-        });
+        if(board[x][y].getValue() === '') {
+            board[x][y].addLetter(player);
+        }
+        
     };
 
     //method to print board
     const printBoard = () => {
-        console.log(board);
+        const boardWithCellValues = board.map((row) => row.map((cell) => cell.getValue()))
+        console.log(boardWithCellValues);
     }
 
     return {
@@ -41,3 +36,18 @@ const Gameboard = (function () {
         printBoard
     }
 })();
+
+function Cell() {
+    let value = '';
+
+    const addLetter = (player) => {
+        value = player;
+    };
+
+    const getValue = () => value;
+
+    return {
+        addLetter,
+        getValue
+    }
+}
