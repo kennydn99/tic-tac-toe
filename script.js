@@ -51,3 +51,50 @@ function Cell() {
         getValue
     }
 }
+
+const GameController = (function (){
+    const playerX = "Player X";
+    const playerO = "Player O";
+
+    const players = [
+        {
+            name: playerX,
+            letter: 'X'
+        },
+        {
+            name: playerO,
+            letter: 'O'
+        }
+    ];
+
+    let activePlayer = players[0];
+    
+    const switchPlayerTurn = () => {
+        activePlayer = (activePlayer === players[0]) ? players[1] : players[0];
+    };
+
+    const getActivePlayer = () => activePlayer;
+
+    const printNewRound = () => {
+        Gameboard.printBoard();
+        console.log(`${getActivePlayer().name}'s turn.`);
+    };
+
+    const playRound = (r, c) => {
+        console.log(`${getActivePlayer().name} is placing ${getActivePlayer().letter} into row:${r}, col${c}.`);
+        Gameboard.placeLetter(r, c, getActivePlayer().letter);
+        
+        //need to check win condition & handle logic
+        
+        switchPlayerTurn();
+        printNewRound();
+    };
+
+    //start game
+    printNewRound();
+
+    return {
+        playRound,
+        getActivePlayer
+    };
+})();
