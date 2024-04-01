@@ -15,12 +15,20 @@ const Gameboard = (function () {
     //method to get board for UI
     const getBoard = () => board;
 
-    const placeLetter = (x, y, player) => {
+    const placeLetter = (x, y, player, callback) => {
 
-        if(board[x][y].getValue() === '') {
-            board[x][y].addLetter(player);
+        if (x < 0 || x >= board.length || y < 0 || y >= board[0].length) {
+            console.log("Invalid move! Coordinates out of bounds.");
+            return;
+        }
+
+        if(board[x][y].getValue() !== '') {
+            console.log("Invalid move! Cell already occupied.");
+            return;
         }
         
+        board[x][y].addLetter(player);
+        callback();
     };
 
     //method to print board
@@ -81,12 +89,11 @@ const GameController = (function (){
     };
 
     const playRound = (r, c) => {
-        console.log(`${getActivePlayer().name} is placing ${getActivePlayer().letter} into row:${r}, col${c}.`);
-        Gameboard.placeLetter(r, c, getActivePlayer().letter);
+        console.log(`${getActivePlayer().name} is placing ${getActivePlayer().letter} into row: ${r}, col: ${c}.`);
+        Gameboard.placeLetter(r, c, getActivePlayer().letter, switchPlayerTurn);
         
         //need to check win condition & handle logic
         
-        switchPlayerTurn();
         printNewRound();
     };
 
