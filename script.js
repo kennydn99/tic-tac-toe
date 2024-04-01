@@ -88,13 +88,72 @@ const GameController = (function (){
         console.log(`${getActivePlayer().name}'s turn.`);
     };
 
+    const checkWin = (player) => {
+        const board = Gameboard.getBoard();
+
+        //Horizontal win condition
+        for (let i = 0; i < board.length; i++) {
+            if (board[i][0].getValue() === player.letter &&
+                board[i][1].getValue() === player.letter &&
+                board[i][2].getValue() === player.letter) {
+                    return true;
+                }
+        }
+
+        //Vertical win condition
+        for (let i = 0; i < board.length; i++) {
+            if (board[0][i].getValue() === player.letter &&
+                board[1][i].getValue() === player.letter &&
+                board[2][i].getValue() === player.letter) {
+                    return true;
+                }
+        }
+
+        //Diagonal Win
+        if ((board[0][0].getValue() === player.letter &&
+            board[1][1].getValue() === player.letter &&
+            board[2][2].getValue() === player.letter) ||
+            (board[0][2].getValue() === player.letter &&
+                board[1][1].getValue() === player.letter &&
+                board[2][0].getValue() === player.letter)) {
+            return true;
+        }
+
+        return false;
+    }
+
     const playRound = (r, c) => {
         console.log(`${getActivePlayer().name} is placing ${getActivePlayer().letter} into row: ${r}, col: ${c}.`);
-        Gameboard.placeLetter(r, c, getActivePlayer().letter, switchPlayerTurn);
-        
-        //need to check win condition & handle logic
-        
-        printNewRound();
+        Gameboard.placeLetter(r, c, getActivePlayer().letter, () => {
+            
+            //need to check win condition & handle logic
+            if (checkWin(getActivePlayer())) {
+                console.log(`${getActivePlayer().name} wins!`);
+                return;
+            }
+
+            //check for draw
+            const board = Gameboard.getBoard();
+            let isDraw = true;
+            for (let i = 0; i < board.length; i++) {
+                for (let j = 0; j < board[i].length; j++) {
+                    if (board[i][j].getValue() === '') {
+                        isDraw = false;
+                        break;
+                    }
+                }
+                if(!isDraw) {
+                    break;
+                }
+            }
+            if (isDraw) {
+                console.log("It's a draw!");
+                return;
+            }
+
+            switchPlayerTurn();
+            printNewRound();
+        });
     };
 
     //start game
