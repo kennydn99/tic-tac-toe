@@ -166,5 +166,40 @@ const GameController = (function (){
 })();
 
 const DisplayController = (function() {
+    const turnDisplay = document.querySelector('.turn');
+    const boardDiv = document.querySelector('.board');
+
+    const updateScreen = () => {
+        //clear board?
+        boardDiv.textContent = '';
+
+        //get updated board and active player
+        const board = Gameboard.getBoard();
+        const activePlayer = GameController.getActivePlayer();
+
+        turnDisplay.textContent = `${activePlayer.name}'s turn`;
+
+        //render board
+        for (let i = 0; i < board.length; i++) {
+            for (let j = 0; j < board[i].length; j++) {
+                const cellButton = document.createElement('button');
+                cellButton.classList.add('cell');
+                cellButton.dataset.row = i;
+                cellButton.dataset.col = j;
+                cellButton.textContent = board[i][j].getValue();
+                boardDiv.appendChild(cellButton);
+            }
+        }
+    }
     
+    boardDiv.addEventListener('click', (e) => {
+        const selectedCellRow = e.target.dataset.row;
+        const selectedCellCol = e.target.dataset.col;
+        if (!selectedCellCol && !selectedCellRow) return;
+
+        GameController.playRound(selectedCellRow, selectedCellCol);
+        updateScreen();
+    });
+
+    updateScreen();
 })();
