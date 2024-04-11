@@ -63,6 +63,10 @@ function Cell() {
 const GameController = (function (){
     const playerX = "Player X";
     const playerO = "Player O";
+    
+    let gameOver = false;
+
+    const isGameOver = () => gameOver;
 
     const players = [
         {
@@ -129,6 +133,7 @@ const GameController = (function (){
             //need to check win condition & handle logic
             if (checkWin(getActivePlayer())) {
                 console.log(`${getActivePlayer().name} wins!`);
+                gameOver = true;
                 return;
             }
 
@@ -148,6 +153,7 @@ const GameController = (function (){
             }
             if (isDraw) {
                 console.log("It's a draw!");
+                gameOver = true;
                 return;
             }
 
@@ -161,7 +167,8 @@ const GameController = (function (){
 
     return {
         playRound,
-        getActivePlayer
+        getActivePlayer,
+        isGameOver
     };
 })();
 
@@ -188,18 +195,27 @@ const DisplayController = (function() {
                 cellButton.dataset.col = j;
                 cellButton.textContent = board[i][j].getValue();
                 boardDiv.appendChild(cellButton);
+                console.log('Game is over? ', GameController.isGameOver());
             }
         }
+
+        if (GameController.isGameOver()) {
+            boardDiv.removeEventListener("click", cellClickListener);
+            console.log("GAME OVER!")
+        }
+
     }
-    
-    boardDiv.addEventListener('click', (e) => {
+
+    const cellClickListener = (e) => {
         const selectedCellRow = e.target.dataset.row;
         const selectedCellCol = e.target.dataset.col;
         if (!selectedCellCol && !selectedCellRow) return;
 
         GameController.playRound(selectedCellRow, selectedCellCol);
         updateScreen();
-    });
+    }
+    
+    boardDiv.addEventListener('click', cellClickListener);
 
     updateScreen();
 })();
