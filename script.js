@@ -1,6 +1,6 @@
 // Gameboard object that stoes gameboard as an array
 const Gameboard = (function () {
-    const board = [];
+    let board = [];
     const rows = cols = 3;
 
     //fill board with cells
@@ -11,6 +11,18 @@ const Gameboard = (function () {
             board[i].push(Cell());
         }
     }
+
+    const resetBoard = () => {
+        board = [];
+        for (let i = 0; i < rows; i++) {
+            board[i] = [];
+            for (let j = 0; j < cols; j++) {
+                //Cell object
+                board[i].push(Cell());
+            }
+        }
+    };
+
 
     //method to get board for UI
     const getBoard = () => board;
@@ -41,7 +53,8 @@ const Gameboard = (function () {
         board,
         getBoard,
         placeLetter,
-        printBoard
+        printBoard,
+        resetBoard
     }
 })();
 
@@ -67,6 +80,8 @@ const GameController = (function (){
     let gameOver = false;
 
     const isGameOver = () => gameOver;
+
+    const resetGameOver = () => gameOver = false;
 
     const players = [
         {
@@ -168,13 +183,15 @@ const GameController = (function (){
     return {
         playRound,
         getActivePlayer,
-        isGameOver
+        isGameOver,
+        resetGameOver
     };
 })();
 
 const DisplayController = (function() {
     const turnDisplay = document.querySelector('.turn');
     const boardDiv = document.querySelector('.board');
+    const container = document.querySelector('.container');
 
     const updateScreen = () => {
         //clear board?
@@ -201,10 +218,34 @@ const DisplayController = (function() {
 
         if (GameController.isGameOver()) {
             boardDiv.removeEventListener("click", cellClickListener);
+            turnDisplay.textContent = `${activePlayer.name} takes the W!`;
+
+            const restartButton = document.createElement('button');
+            restartButton.textContent = 'Restart';
+            restartButton.classList.add('restart-btn')
+            container.appendChild(restartButton);
+            restartButton.addEventListener('click', restartGame);
             console.log("GAME OVER!")
+        } else {
+            const existingRestartButton = document.querySelector('.restart-btn');
+            if (existingRestartButton) {
+                existingRestartButton.remove();
+            }
         }
 
     }
+
+    const restartGame = () => {
+        GameController.resetGameOver();
+        console.log(`restart game, gameover is`, GameController.isGameOver());
+        //reinitialize game board
+        Gameboard.resetBoard();
+        Gameboard.printBoard();
+        boardDiv.addEventListener('click', cellClickListener);
+
+        updateScreen();
+    }
+
 
     const cellClickListener = (e) => {
         const selectedCellRow = e.target.dataset.row;
