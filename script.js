@@ -74,8 +74,29 @@ function Cell() {
 }
 
 const GameController = (function (){
-    const playerX = "Player X";
-    const playerO = "Player O";
+    const mainMenu = document.querySelector('.main-menu');
+    const container = document.querySelector('.container');
+  
+    const startGame = () => {
+        mainMenu.style.display = 'none';
+        container.style.display = 'flex';
+        console.log("Start the game!");
+    }
+    
+    const playButton = document.getElementById('playButton');
+    playButton.addEventListener('click', startGame);
+
+    const returnToMainMenu = () => {
+        // Show main menu, hide game board
+        mainMenu.style.display = 'flex';
+        container.style.display = 'none';
+    }
+
+    const returnButton = document.getElementById('returnButton');
+    returnButton.addEventListener('click', returnToMainMenu);
+
+    const playerXName = document.getElementById('playerXName').value || "Player X";
+    const playerOName = document.getElementById('playerOName').value || "Player O";
     
     let gameOver = false;
     let isDraw = false;
@@ -91,12 +112,12 @@ const GameController = (function (){
 
     const players = [
         {
-            name: playerX,
-            letter: 'X'
+            name: playerXName,
+            letter: 'X',
         },
         {
-            name: playerO,
-            letter: 'O'
+            name: playerOName,
+            letter: 'O',
         }
     ];
 
@@ -110,7 +131,6 @@ const GameController = (function (){
 
     const printNewRound = () => {
         Gameboard.printBoard();
-        console.log(`${getActivePlayer().name}'s turn.`);
     };
 
     const checkWin = (player) => {
@@ -148,12 +168,10 @@ const GameController = (function (){
     }
 
     const playRound = (r, c) => {
-        console.log(`${getActivePlayer().name} is placing ${getActivePlayer().letter} into row: ${r}, col: ${c}.`);
         Gameboard.placeLetter(r, c, getActivePlayer().letter, () => {
             
             //need to check win condition & handle logic
             if (checkWin(getActivePlayer())) {
-                console.log(`${getActivePlayer().name} wins!`);
                 gameOver = true;
                 return;
             }
@@ -173,7 +191,6 @@ const GameController = (function (){
                 }
             }
             if (isDraw) {
-                console.log("It's a draw!");
                 gameOver = true;
                 return;
             }
@@ -198,7 +215,6 @@ const GameController = (function (){
 const DisplayController = (function() {
     const turnDisplay = document.querySelector('.turn');
     const boardDiv = document.querySelector('.board');
-    const container = document.querySelector('.container');
     const buttonContainer = document.querySelector('.btn-container');
 
     const updateScreen = () => {
@@ -220,7 +236,6 @@ const DisplayController = (function() {
                 cellButton.dataset.col = j;
                 cellButton.textContent = board[i][j].getValue();
                 boardDiv.appendChild(cellButton);
-                console.log('Game is over? ', GameController.isGameOver());
             }
         }
 
@@ -237,7 +252,7 @@ const DisplayController = (function() {
             restartButton.classList.add('restart-btn')
             buttonContainer.appendChild(restartButton);
             restartButton.addEventListener('click', restartGame);
-            console.log("GAME OVER!")
+
         } else {
             const existingRestartButton = document.querySelector('.restart-btn');
             if (existingRestartButton) {
@@ -249,7 +264,6 @@ const DisplayController = (function() {
 
     const restartGame = () => {
         GameController.resetGame();
-        console.log(`restart game, gameover is`, GameController.isGameOver());
         //reinitialize game board
         Gameboard.resetBoard();
         Gameboard.printBoard();
