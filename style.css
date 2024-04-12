@@ -1,3 +1,6 @@
+* {
+  font-family: "Honk", sans-serif;
+}
 
 .board {
     display: grid;
@@ -5,10 +8,8 @@
     width: 500px;
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(3, 1fr);
-    border: 1px solid black;
     gap: 2px;
     padding: 2px;
-    background-color: yellow;
 }
 
 .cell {
@@ -16,10 +17,14 @@
     justify-content: center;
     align-items: center;
     text-align: center;
-    font-size: 2rem;
-    border: 1px solid grey;
-    background: lightyellow;
+    font-size: 5rem;
+    background: rgba(247, 247, 135, 0.5);
     cursor: pointer;
+    border: none;
+  }
+
+  .cell:hover {
+    background: rgba(247, 247, 135, 0.8);
   }
 
   body {
@@ -37,7 +42,6 @@
 
   .container {
     display: none;
-    /* display: flex; */
     flex-direction: column;
     gap: 24px;
   }
@@ -45,6 +49,7 @@
   .turn {
     padding: 0;
     margin: 0;
+    font-size: 3rem;
   }
 
   .restart-btn, #playButton, #returnButton {
@@ -78,13 +83,6 @@
     justify-content: center;
     align-items: center;
     gap: 16px;
-  }
-
-  input {
-    height: 25px;
-    border-radius: 5px;
-    border: none;
-    border: 2px solid rgb(163, 162, 162);
   }
 
   .game-title {

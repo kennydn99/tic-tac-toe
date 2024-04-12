@@ -23,19 +23,16 @@ const Gameboard = (function () {
         }
     };
 
-
     //method to get board for UI
     const getBoard = () => board;
 
     const placeLetter = (x, y, player, callback) => {
 
         if (x < 0 || x >= board.length || y < 0 || y >= board[0].length) {
-            console.log("Invalid move! Coordinates out of bounds.");
             return;
         }
 
         if(board[x][y].getValue() !== '') {
-            console.log("Invalid move! Cell already occupied.");
             return;
         }
         
@@ -80,14 +77,12 @@ const GameController = (function (){
     const startGame = () => {
         mainMenu.style.display = 'none';
         container.style.display = 'flex';
-        console.log("Start the game!");
     }
     
     const playButton = document.getElementById('playButton');
     playButton.addEventListener('click', startGame);
 
     const returnToMainMenu = () => {
-        // Show main menu, hide game board
         mainMenu.style.display = 'flex';
         container.style.display = 'none';
     }
@@ -95,8 +90,6 @@ const GameController = (function (){
     const returnButton = document.getElementById('returnButton');
     returnButton.addEventListener('click', returnToMainMenu);
 
-    const playerXName = document.getElementById('playerXName').value || "Player X";
-    const playerOName = document.getElementById('playerOName').value || "Player O";
     
     let gameOver = false;
     let isDraw = false;
@@ -112,11 +105,11 @@ const GameController = (function (){
 
     const players = [
         {
-            name: playerXName,
+            name: "Player X",
             letter: 'X',
         },
         {
-            name: playerOName,
+            name: "Player O",
             letter: 'O',
         }
     ];
@@ -170,7 +163,6 @@ const GameController = (function (){
     const playRound = (r, c) => {
         Gameboard.placeLetter(r, c, getActivePlayer().letter, () => {
             
-            //need to check win condition & handle logic
             if (checkWin(getActivePlayer())) {
                 gameOver = true;
                 return;
@@ -218,7 +210,6 @@ const DisplayController = (function() {
     const buttonContainer = document.querySelector('.btn-container');
 
     const updateScreen = () => {
-        //clear board?
         boardDiv.textContent = '';
 
         //get updated board and active player
