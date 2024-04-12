@@ -78,10 +78,16 @@ const GameController = (function (){
     const playerO = "Player O";
     
     let gameOver = false;
+    let isDraw = false;
 
     const isGameOver = () => gameOver;
 
-    const resetGameOver = () => gameOver = false;
+    const isADraw = () => isDraw;
+
+    const resetGame = () => {
+        gameOver = false;
+        isDraw = false;
+    }
 
     const players = [
         {
@@ -154,7 +160,7 @@ const GameController = (function (){
 
             //check for draw
             const board = Gameboard.getBoard();
-            let isDraw = true;
+            isDraw = true;
             for (let i = 0; i < board.length; i++) {
                 for (let j = 0; j < board[i].length; j++) {
                     if (board[i][j].getValue() === '') {
@@ -184,7 +190,8 @@ const GameController = (function (){
         playRound,
         getActivePlayer,
         isGameOver,
-        resetGameOver
+        resetGame,
+        isADraw
     };
 })();
 
@@ -192,6 +199,7 @@ const DisplayController = (function() {
     const turnDisplay = document.querySelector('.turn');
     const boardDiv = document.querySelector('.board');
     const container = document.querySelector('.container');
+    const buttonContainer = document.querySelector('.btn-container');
 
     const updateScreen = () => {
         //clear board?
@@ -218,12 +226,16 @@ const DisplayController = (function() {
 
         if (GameController.isGameOver()) {
             boardDiv.removeEventListener("click", cellClickListener);
-            turnDisplay.textContent = `${activePlayer.name} takes the W!`;
+            if(GameController.isADraw()) {
+                turnDisplay.textContent = `GG! It's a Draw!`;
+            } else {
+                turnDisplay.textContent = `${activePlayer.name} takes the W!`;
+            }
 
             const restartButton = document.createElement('button');
             restartButton.textContent = 'Restart';
             restartButton.classList.add('restart-btn')
-            container.appendChild(restartButton);
+            buttonContainer.appendChild(restartButton);
             restartButton.addEventListener('click', restartGame);
             console.log("GAME OVER!")
         } else {
@@ -236,7 +248,7 @@ const DisplayController = (function() {
     }
 
     const restartGame = () => {
-        GameController.resetGameOver();
+        GameController.resetGame();
         console.log(`restart game, gameover is`, GameController.isGameOver());
         //reinitialize game board
         Gameboard.resetBoard();
